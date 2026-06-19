@@ -1,0 +1,18 @@
+5
+# Grid: 5x5 - Puzzle with some given values and constraints
+0, 0, 0, 2, 0
+0, 2, 0, 0, 0
+0, 0, 3, 0, 0
+0, 0, 0, 0, 0
+0, 0, 0, 0, 0
+# Horizontal constraints
+0, 0, 0, 0
+0, 0, 0, 0
+0, 0, 0, 0
+0, 0, 0, 0
+0, 0, 0, 0
+# Vertical constraints
+0, 0, 0, 0, 0
+0, 0, 0, 0, 0
+0, 0, 0, 0, 0
+0, 0, 0, 0, 0
