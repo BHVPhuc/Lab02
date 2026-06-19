@@ -1,0 +1,15 @@
+4
+# Grid: 4x4 - Puzzle with some constraints
+0, 2, 0, 0
+0, 0, 0, 3
+0, 0, 1, 0
+0, 0, 4, 0
+# Horizontal constraints
+1, 0, 0
+0, 0, 0
+0, 0, 1
+0, 0, 0
+# Vertical constraints
+0, 1, 0, 0
+0, 0, 0, 0
+0, 0, 0, 0
