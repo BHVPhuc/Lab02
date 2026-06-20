@@ -20,12 +20,12 @@ except ImportError:
 
 # Cac solver khac se duoc them boi cac thanh vien khac trong nhom
 try:
-    from forward_chaining_solver import ForwardChainingSolver
+    from forward_chaining import ForwardChainingSolver
 except ImportError:
     ForwardChainingSolver = None
 
 try:
-    from backward_chaining_solver import BackwardChainingSolver
+    from backward_chaining import BackwardChainingSolver
 except ImportError:
     BackwardChainingSolver = None
 
@@ -216,7 +216,12 @@ def main():
     elif args.input:
         # Chay 1 file
         input_path = os.path.join(input_dir, args.input) if not os.path.isabs(args.input) else args.input
-        output_path = os.path.join(output_dir, args.output) if not os.path.isabs(args.output) else args.output
+        
+        if args.output == 'output.txt':
+            output_num = os.path.basename(args.input).replace('input-', '').replace('.txt', '')
+            output_path = os.path.join(output_dir, f"output-{output_num}-{args.algorithm}.txt")
+        else:
+            output_path = os.path.join(output_dir, args.output) if not os.path.isabs(args.output) else args.output
         
         print(f"\nDang giai: {args.input} bang {args.algorithm}")
         stats = run_solver(input_path, output_path, args.algorithm)
