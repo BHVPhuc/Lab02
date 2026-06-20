@@ -2,12 +2,21 @@ import sys
 import os
 import time
 import argparse
+import signal
 
 from puzzle import FutoshikiPuzzle
 from parser import read_input, save_solution
 
 # Import tat ca solvers (moi nguoi se viet file cua minh)
 # Hien tai chi co BruteForce va Backtracking, cac nguoi khac se them vao sau
+
+class TimeoutError(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutError("Solver timed out")
+
+
 try:
     from brute_force_solver import BruteForceSolver
 except ImportError:
@@ -70,6 +79,16 @@ def run_solver(input_file: str, output_file: str, algorithm: str, **kwargs) -> d
     # 1. Doc input
     puzzle = read_input(input_file)
     
+    ## add interupt within 60 seconds
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(60)  # 60 seconds timeout
+    try:
+        solution = solver.solve()
+    except TimeoutError:
+        solution = None
+    finally:
+        signal.alarm(0)
+
     # 2. Tao solver va chay
     solver_class = AVAILABLE_SOLVERS[algorithm]
     solver = solver_class(puzzle, **kwargs)
