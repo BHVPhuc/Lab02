@@ -25,6 +25,31 @@ class AStarSolver:
             if puzzle.is_valid(row, col, val)
         ]
 
+    def get_degree(
+        self,
+        puzzle: FutoshikiPuzzle,
+        row: int,
+        col: int
+    ) -> int:
+        """
+        Degree Heuristic:
+        Đếm số biến chưa gán có liên quan tới ô (row, col).
+        """
+
+        degree = 0
+
+        # Cùng hàng
+        for c in range(puzzle.n):
+            if c != col and puzzle.grid[row][c] == 0:
+                degree += 1
+
+        # Cùng cột
+        for r in range(puzzle.n):
+            if r != row and puzzle.grid[r][col] == 0:
+                degree += 1
+
+        return degree
+
     def heuristic_2(self, puzzle: FutoshikiPuzzle) -> float:
         """
         Heuristic:
@@ -57,25 +82,52 @@ class AStarSolver:
         best_domain = []
 
         min_options = float('inf')
+        max_degree = -1
 
         for r in range(puzzle.n):
             for c in range(puzzle.n):
 
                 if puzzle.grid[r][c] == 0:
 
-                    domain = self.get_domain(puzzle, r, c)
+                    domain = self.get_domain(
+                        puzzle,
+                        r,
+                        c
+                    )
+
                     domain_size = len(domain)
 
+                    # MRV
                     if domain_size < min_options:
 
                         min_options = domain_size
+
                         best_r = r
                         best_c = c
                         best_domain = domain
 
-                        # MRV Early Exit
-                        if domain_size <= 1:
-                            return best_r, best_c, best_domain
+                        max_degree = self.get_degree(
+                            puzzle,
+                            r,
+                            c
+                        )
+
+                    # Degree Heuristic (tie-break)
+                    elif domain_size == min_options:
+
+                        degree = self.get_degree(
+                            puzzle,
+                            r,
+                            c
+                        )
+
+                        if degree > max_degree:
+
+                            max_degree = degree
+
+                            best_r = r
+                            best_c = c
+                            best_domain = domain
 
         return best_r, best_c, best_domain
 
