@@ -43,6 +43,55 @@ class BackwardChainingSolver:
             'solution_found': self.solution is not None
         }
 
+    def query_value(self, r, c, v):
+        """
+        Query: Can the cell (r, c) take the value 'v' based on current rules?
+        """
+        return self._prove_value(r, c, v)
+
+    def query_possible_values(self, r, c):
+        """
+        Query: What are all the possible valid values for cell (r, c)?
+        """
+        if self.state[r][c] != 0:
+            return [self.state[r][c]]
+            
+        possible_values = []
+        for v in range(1, self.n + 1):
+            if self._prove_value(r, c, v):
+                possible_values.append(v)
+                
+        return possible_values
+
+    def demonstrate_queries(self):
+        """Demonstrate querying individual cell values."""
+        lines = []
+        lines.append("=== DEMONSTRATING BACKWARD CHAINING QUERIES ===")
+        
+        empty_cell = None
+        filled_cell = None
+        for r in range(self.n):
+            for c in range(self.n):
+                if self.state[r][c] == 0 and not empty_cell:
+                    empty_cell = (r, c)
+                elif self.state[r][c] != 0 and not filled_cell:
+                    filled_cell = (r, c)
+                    
+        if filled_cell:
+            r, c = filled_cell
+            lines.append(f"Query: What are possible values for pre-filled cell ({r}, {c})?")
+            lines.append(f"Answer: {self.query_possible_values(r, c)}")
+            
+        if empty_cell:
+            r, c = empty_cell
+            lines.append(f"Query: Can empty cell ({r}, {c}) be 1?")
+            lines.append(f"Answer: {self.query_value(r, c, 1)}")
+            lines.append(f"Query: What are all possible values for empty cell ({r}, {c})?")
+            lines.append(f"Answer: {self.query_possible_values(r, c)}")
+            
+        lines.append("===============================================")
+        return "\n".join(lines)
+
     def _query_cell(self, r, c):
         if r == self.n:
             return True

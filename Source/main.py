@@ -90,6 +90,10 @@ def run_solver(input_file: str, output_file: str, algorithm: str,
     solver_class = AVAILABLE_SOLVERS[algorithm]
     solver = solver_class(puzzle, **kwargs)
     
+    if algorithm == 'backward_chaining':
+        if hasattr(solver, 'demonstrate_queries'):
+            print("\n" + solver.demonstrate_queries())
+            
     # 3. Thực thi thuật toán có giám sát thời gian
     start_time = time.time()
     is_timeout = False
