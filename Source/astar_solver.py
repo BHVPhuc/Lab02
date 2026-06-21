@@ -32,21 +32,39 @@ class AStarSolver:
         col: int
     ) -> int:
         """
-        Degree Heuristic:
-        Đếm số biến chưa gán có liên quan tới ô (row, col).
+        Degree Heuristic nâng cấp cho Futoshiki:
+        - Đếm số biến chưa gán cùng hàng/cột.
+        - Cộng thêm điểm thưởng (trọng số 2) cho các ràng buộc bất đẳng thức (<, >) nối với ô trống.
         """
-
         degree = 0
 
-        # Cùng hàng
+        # 1. Ràng buộc cơ bản (Khác biệt trên cùng hàng & cột)
         for c in range(puzzle.n):
             if c != col and puzzle.grid[row][c] == 0:
                 degree += 1
 
-        # Cùng cột
         for r in range(puzzle.n):
             if r != row and puzzle.grid[r][col] == 0:
                 degree += 1
+
+        # 2. Ràng buộc nâng cao (Bất đẳng thức Futoshiki)
+        # Mỗi ràng buộc bất đẳng thức với ô trống kề cạnh sẽ được cộng 2 điểm (vì sức mạnh cắt tỉa cao hơn)
+
+        # Kiểm tra ô kề trái
+        if col > 0 and puzzle.grid[row][col - 1] == 0 and puzzle.h_constraints[row][col - 1] != 0:
+            degree += 2
+
+        # Kiểm tra ô kề phải
+        if col < puzzle.n - 1 and puzzle.grid[row][col + 1] == 0 and puzzle.h_constraints[row][col] != 0:
+            degree += 2
+
+        # Kiểm tra ô kề trên
+        if row > 0 and puzzle.grid[row - 1][col] == 0 and puzzle.v_constraints[row - 1][col] != 0:
+            degree += 2
+
+        # Kiểm tra ô kề dưới
+        if row < puzzle.n - 1 and puzzle.grid[row + 1][col] == 0 and puzzle.v_constraints[row][col] != 0:
+            degree += 2
 
         return degree
 
@@ -112,6 +130,9 @@ class AStarSolver:
                             c
                         )
 
+                        if domain_size <= 1:
+                            return best_r, best_c, best_domain
+
                     # Degree Heuristic (tie-break)
                     elif domain_size == min_options:
 
@@ -154,7 +175,7 @@ class AStarSolver:
             )
         )
 
-        # Closed list chuẩn A*
+       
         closed_set = set()
 
         while queue:
