@@ -111,10 +111,12 @@ def run_solver(input_file: str, output_file: str, algorithm: str,
     
     # 3. Chay solver voi timeout
     start_time = time.time()
+    is_timeout = False
     try:
         solution = run_solver_with_timeout(solver, timeout_seconds)
     except TimeoutException as e:
         solution = None
+        is_timeout = True
         print(f"  [Timeout] {algorithm} bi gioi han {timeout_seconds}s")
     except Exception as e:
         solution = None
@@ -131,11 +133,12 @@ def run_solver(input_file: str, output_file: str, algorithm: str,
     stats['input_file'] = input_file
     stats['output_file'] = output_file if solution else None
     stats['solution_found'] = solution is not None
+    stats['timeout'] = is_timeout
     
     return stats
 
 
-def compare_all_algorithms(input_dir: str = 'Inputs', output_dir: str = 'Outputs'):
+def compare_all_algorithms(input_dir: str = 'Inputs', output_dir: str = 'Outputs', timeout_seconds: int = 30):
     """
     So sanh TAT CA cac thuat toan co san tren tat ca test cases
     Day la yeu cau cua de bai (phan "Comparison algorithms")
@@ -185,7 +188,7 @@ def compare_all_algorithms(input_dir: str = 'Inputs', output_dir: str = 'Outputs
                 if algo_name == 'backtracking':
                     kwargs = {'use_mrv': True, 'use_forward_checking': True}
                 
-                stats = run_solver(input_path, output_file, algo_name, **kwargs)
+                stats = run_solver(input_path, output_file, algo_name, timeout_seconds=timeout_seconds, **kwargs)
                 results.append(stats)
                 
                 print(f"[{algo_name}] Time: {stats['time']:.4f}s, "
@@ -207,8 +210,9 @@ def compare_all_algorithms(input_dir: str = 'Inputs', output_dir: str = 'Outputs
         if len(algo) > 24:
             algo = algo[:21] + "..."
         backtracks = str(r.get('backtracks', '-'))
+        time_str = "TIMEOUT" if r.get('timeout', False) else f"{r['time']:.4f}"
         print(f"{os.path.basename(r['input_file']):<15} {algo:<25} "
-              f"{r['time']:<12.4f} {r['nodes_expanded']:<10} {backtracks:<10}")
+              f"{time_str:<12} {r['nodes_expanded']:<10} {backtracks:<10}")
     
     return results
 
@@ -237,6 +241,8 @@ def main():
                        help='So sanh tat ca cac thuat toan')
     parser.add_argument('--all-tests', action='store_true',
                        help='Chay tren tat ca test cases')
+    parser.add_argument('-t', '--timeout', type=int, default=30,
+                       help='Thoi gian gioi han cho moi thuat toan (giay)')
     
     args = parser.parse_args()
     
@@ -246,7 +252,7 @@ def main():
     
     if args.compare_all:
         # So sanh tat ca thuat toan (yeu cau de bai)
-        compare_all_algorithms(input_dir, output_dir)
+        compare_all_algorithms(input_dir, output_dir, args.timeout)
         
     elif args.all_tests and args.algorithm != 'all':
         # Chay 1 thuat toan tren tat ca test cases
@@ -260,7 +266,7 @@ def main():
             output_file = os.path.join(output_dir, f"output-{output_num}-{args.algorithm}.txt")
             
             print(f"\nDang giai {input_file} bang {args.algorithm}...")
-            stats = run_solver(input_path, output_file, args.algorithm)
+            stats = run_solver(input_path, output_file, args.algorithm, timeout_seconds=args.timeout)
             
             if stats['solution_found']:
                 print(f"[OK] Giai thanh cong! Time: {stats['time']:.4f}s")
@@ -278,7 +284,7 @@ def main():
             output_path = os.path.join(output_dir, args.output) if not os.path.isabs(args.output) else args.output
         
         print(f"\nDang giai: {args.input} bang {args.algorithm}")
-        stats = run_solver(input_path, output_path, args.algorithm)
+        stats = run_solver(input_path, output_path, args.algorithm, timeout_seconds=args.timeout)
         
         if stats['solution_found']:
             print(f"[OK] Giai thanh cong!")
@@ -293,7 +299,7 @@ def main():
     else:
         # Mac dinh: so sanh tat ca
         print("Khong co tham so. Dang chay so sanh tat ca cac thuat toan...")
-        compare_all_algorithms(input_dir, output_dir)
+        compare_all_algorithms(input_dir, output_dir, args.timeout)
 
 
 if __name__ == '__main__':
