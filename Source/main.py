@@ -245,7 +245,7 @@ def main():
         for input_file in input_files:
             input_path = os.path.join(input_dir, input_file)
             output_num = input_file.replace('input-', '').replace('.txt', '')
-            output_file = os.path.join(output_dir, f"output-{output_num}-{args.algorithm}.txt")
+            output_file = os.path.join(output_dir, f"output-{output_num}.txt")
             
             print(f"\nDang giai {input_file} bang {args.algorithm}...")
             stats = run_solver(input_path, output_file, args.algorithm, timeout_seconds=args.timeout)
@@ -262,7 +262,7 @@ def main():
         
         if args.output == 'output.txt':
             output_num = os.path.basename(args.input).replace('input-', '').replace('.txt', '')
-            output_path = os.path.join(output_dir, f"output-{output_num}-{args.algorithm}.txt")
+            output_path = os.path.join(output_dir, f"output-{output_num}.txt")
         else:
             output_path = os.path.join(output_dir, args.output) if not os.path.isabs(args.output) else args.output
         
