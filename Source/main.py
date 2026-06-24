@@ -85,6 +85,7 @@ def run_solver(input_file: str, output_file: str, algorithm: str,
     
     # 1. Đọc dữ liệu đầu vào
     puzzle = read_input(input_file)
+    original_puzzle = puzzle.clone()
     
     # 2. Khởi tạo Solver tương ứng
     solver_class = AVAILABLE_SOLVERS[algorithm]
@@ -109,7 +110,12 @@ def run_solver(input_file: str, output_file: str, algorithm: str,
     
     # 4. Ghi nhận kết quả nếu giải thành công
     if solution and hasattr(solution, 'grid'):
-        save_solution(puzzle, solution.grid, output_file)
+        from validator import validate_solution
+        if validate_solution(original_puzzle, solution.grid, original_puzzle):
+            print("  [Validator] Loi giai HOP LE.")
+            save_solution(original_puzzle, solution.grid, output_file)
+        else:
+            print("  [Validator Error] Loi giai KHONG HOP LE!")
     
     # 5. Thu thập thông số thống kê an toàn
     try:

@@ -12,6 +12,7 @@ Source/
 ├── main.py                      # Entry point chinh
 ├── puzzle.py                    # Class du lieu dung chung
 ├── parser.py                    # Doc input / Xuat output
+├── validator.py                 # Bo kiem tra rang buoc va ket qua
 ├── brute_force_solver.py        # Brute Force Solver
 ├── backtracking_solver.py       # Backtracking Solver (MRV + Forward Checking)
 ├── forward_chaining_solver.py   # Forward Chaining (neu co)

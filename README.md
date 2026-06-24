@@ -7,11 +7,13 @@ Lab02_AI/
 ├── Source/                          # Source code chính
 │   ├── puzzle.py                    # Class FutoshikiPuzzle (dùng chung)
 │   ├── parser.py                    # Đọc input + Xuất output
+│   ├── validator.py                 # Bộ kiểm tra ràng buộc và kết quả toàn cục
 │   ├── brute_force_solver.py        # Brute Force Solver
 │   ├── backtracking_solver.py       # Backtracking Solver (MRV + Forward Checking)
-│   ├── forward_chaining_solver.py   # Forward Chaining Solver (Người 1)
-│   ├── backward_chaining_solver.py  # Backward Chaining Solver (Người 3)
-│   ├── a_star_solver.py             # A* Search Solver (Người 4)
+│   ├── forward_chaining.py          # Forward Chaining Solver
+│   ├── backward_chaining.py         # Backward Chaining Solver
+│   ├── astar_solver.py              # A* Search Solver
+│   ├── kb_generator.py              # Bộ sinh tri thức FOL -> CNF -> Grounding
 │   ├── main.py                      # Entry point - Điều phối tất cả thuật toán
 │   ├── Inputs/                      # 10 test cases (input-01.txt → input-10.txt)
 │   └── Outputs/                     # Kết quả giải (output-XX.txt)
@@ -38,11 +40,11 @@ Lab02_AI/
 
 | Thành viên | Nhiệm vụ | File chính |
 |-----------|---------|-----------|
-| **Người 1** | Forward Chaining | `forward_chaining_solver.py` |
+| **Người 1** | Core Engine & Parser & Validator | `puzzle.py`, `parser.py`, `validator.py` |
 | **Người 2** | Brute Force + Backtracking | `brute_force_solver.py`, `backtracking_solver.py` |
-| **Người 3** | Backward Chaining (SLD) | `backward_chaining_solver.py` |
-| **Người 4** | A* Search | `a_star_solver.py` |
-| **Cả nhóm** | Report + Test cases | `Report.pdf`, `Inputs/` |
+| **Người 3** | A* Search | `astar_solver.py` |
+| **Người 4** | FOL + CNF + KB Generation | `kb_generator.py` |
+| **Người 5** | Forward Chaining + Backward Chaining + Report | `forward_chaining.py`, `backward_chaining.py`, `report/` |
 
 ## Luồng dữ liệu
 
